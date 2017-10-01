@@ -23,6 +23,8 @@ public:
   // measurement covariance matrix
   Eigen::MatrixXd R_;
 
+  // measurement jacobian matrix
+  //Eigen::MatrixXd Hj_;
   /**
    * Constructor
    */
@@ -64,6 +66,19 @@ public:
    */
   void UpdateEKF(const Eigen::VectorXd &z);
 
+  /**
+  * Keep the angle in the value between -PI to +PI
+  * @param phi The angle
+  */
+  void KeepInPi(float &phi);
+  void KeepInPi(double &phi);
+
+  /**
+  * Keep the angle difference in 2*PI
+  * @param phi_diff The angle difference
+  */
+  void KeepDiffInTwoPi(float &phi_diff);
+  void KeepDiffInTwoPi(double &phi_diff);
 };
 
 #endif /* KALMAN_FILTER_H_ */
