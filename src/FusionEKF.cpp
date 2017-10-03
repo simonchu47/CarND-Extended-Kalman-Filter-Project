@@ -82,7 +82,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       float rho =  measurement_pack.raw_measurements_[0];
       float phi =  measurement_pack.raw_measurements_[1];
       float rho_dot =  measurement_pack.raw_measurements_[2];
-      ekf_.x_ << rho * sin(phi), rho * cos(phi), rho_dot * sin(phi), rho_dot * cos(phi);
+      ekf_.x_ << rho*sin(phi), rho*cos(phi), rho_dot*sin(phi), rho_dot*cos(phi);
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       /**
@@ -101,7 +101,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   /*****************************************************************************
    *  Prediction
    ****************************************************************************/
-  std::cout << "F_step0" << std::endl;
 
   /**
    TODO:
@@ -111,7 +110,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
      * Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
    */
   //compute the time elapsed between the current and previous measurements
-  float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;	//dt - expressed in seconds
+  float dt = (measurement_pack.timestamp_ - previous_timestamp_)/1000000.0;	//dt - expressed in seconds
   previous_timestamp_ = measurement_pack.timestamp_;
     
   // TODO: YOUR CODE HERE
@@ -123,17 +122,15 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
              0, 0, 0, 1;
   //2. Set the process covariance matrix Q
   ekf_.Q_ = MatrixXd(4, 4);
-  float dt_2 = dt * dt;
-  float dt_3 = dt_2 * dt;
-  float dt_4 = dt_3 * dt;
+  float dt_2 = dt*dt;
+  float dt_3 = dt_2*dt;
+  float dt_4 = dt_3*dt;
   ekf_.Q_ << dt_4*noise_ax/4, 0, dt_3*noise_ax/2, 0,
              0, dt_4*noise_ay, 0, dt_3*noise_ay/2,
              dt_3*noise_ax/2, 0, dt_2*noise_ax, 0,
              0, dt_3*noise_ay/2, 0, dt_2*noise_ay,
 
-  std::cout << "F_step1" << std::endl;
   ekf_.Predict();
-  std::cout << "F_step2" << std::endl;
 
   /*****************************************************************************
    *  Update
