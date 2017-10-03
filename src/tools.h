@@ -29,6 +29,13 @@ public:
   */
   MatrixXd CalculateJacobian(const VectorXd& x_state);
 
+  /**
+  *  A helper method to keep a variable none zero value
+  */
+  void KeepNoneZero(float &x, float almost_zero);
+  void KeepNoneZero(double &x, float almost_zero);
+
+
 };
 
 #endif /* TOOLS_H_ */

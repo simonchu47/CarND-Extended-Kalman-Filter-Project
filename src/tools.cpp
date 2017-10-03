@@ -5,6 +5,8 @@ using Eigen::VectorXd;
 using Eigen::MatrixXd;
 using std::vector;
 
+#define ALMOST_ZERO 0.0001
+
 Tools::Tools() {}
 
 Tools::~Tools() {}
@@ -64,10 +66,12 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 
   //pre-compute a set of terms to avoid repeated calculation
   float c1 = px*px+py*py;
+  KeepNoneZero(c1, ALMOST_ZERO);
   float c2 = sqrt(c1);
   float c3 = (c1*c2);
 
   //check division by zero
+  /*
   if(fabs(c1) < 0.0001){
     cout << "CalculateJacobian () - Error - Division by Zero" << endl;
     c1 = 0.0001;
@@ -78,7 +82,8 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 	py*(vx*py - vy*px)/c3, px*(px*vy - py*vx)/c3, px/c2, py/c2;
 
     return Hj;
-  }
+  }*/
+  
   
   //compute the Jacobian matrix
   Hj << (px/c2), (py/c2), 0, 0,
@@ -87,3 +92,26 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 
   return Hj;
 }
+
+void Tools::KeepNoneZero(float &x, float almost_zero) {
+  if (fabs(x) < almost_zero) {
+    if (x > 0) {
+      x = almost_zero;
+    } else {
+      x = -almost_zero;
+    }
+  }
+}
+
+void Tools::KeepNoneZero(double &x, float almost_zero) {
+  if (fabs(x) < almost_zero) {
+    if (x > 0) {
+      x = almost_zero;
+    } else {
+      x = -almost_zero;
+    }
+  }
+}
+
+
+

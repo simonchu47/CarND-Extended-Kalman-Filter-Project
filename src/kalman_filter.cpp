@@ -7,6 +7,7 @@ using Eigen::VectorXd;
 using namespace std; 
 
 #define PI 3.14159265
+#define ALMOST_ZERO 0.0001
 
 KalmanFilter::KalmanFilter() {}
 
@@ -53,6 +54,9 @@ void KalmanFilter::Update(const VectorXd &z) {
   TODO:
     * update the state by using Kalman Filter equations
   */
+  tools.KeepNoneZero(x_[0], ALMOST_ZERO);
+  tools.KeepNoneZero(x_[1], ALMOST_ZERO);
+  /*
   if ((fabs(x_[0]) < 0.0001) && (fabs(x_[1]) < 0.0001)) {
     std::cout << "step1" << std::endl;
     if (x_[0] > 0) {
@@ -65,7 +69,7 @@ void KalmanFilter::Update(const VectorXd &z) {
     } else {
       x_[1] = -0.0001;
     }
-  }
+  }*/
 
   VectorXd z_pred = H_ * x_;
   VectorXd y = z - z_pred;
@@ -96,7 +100,10 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   float py = x_[1];
   float vx = x_[2];
   float vy = x_[3];
-
+  
+  tools.KeepNoneZero(px, ALMOST_ZERO);
+  tools.KeepNoneZero(py, ALMOST_ZERO);
+  /*
   if ((fabs(px) < 0.0001) && (fabs(py) < 0.0001)) {
     std::cout << "step1" << std::endl;
     if (px > 0) {
@@ -109,7 +116,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     } else {
       py = -0.0001;
     }
-  }
+  }*/
 
   std::cout << "step2" << std::endl;
   float rho = sqrt(px*px + py*py);
@@ -128,13 +135,16 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   std::cout << "e:phi = " << phi << std::endl;
   std::cout << "e:z(1) = " << z(1) << std::endl;
 
+  tools.KeepNoneZero(rho, ALMOST_ZERO);
+  /*
   if (fabs(rho) < 0.0001) {
     if (rho > 0) {
       rho = 0.0001;
     } else {
       rho = -0.0001;
     }
-  }
+  }*/
+
   std::cout << "e:rho = " << rho << std::endl;
   std::cout << "e:(px*vx+py*vy)" << px*vx+py*vy << std::endl;
   float rho_dot = (px*vx + py*vy)/rho;
